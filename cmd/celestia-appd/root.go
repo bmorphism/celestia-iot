@@ -77,11 +77,15 @@ func NewRootCmd() *cobra.Command {
 
 			tmCfg := tmcfg.DefaultConfig()
 
+			profileConstantly(cmd)
+
 			customAppTemplate, customAppConfig := initAppConfig()
 			return server.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, tmCfg)
 		},
 		SilenceUsage: true,
 	}
+
+	addProfileFlag(rootCmd)
 
 	initRootCmd(rootCmd, encodingConfig)
 
