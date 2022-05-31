@@ -46,7 +46,7 @@ func profileConstantly(cmd *cobra.Command) {
 		session := tmrand.Str(4)
 		cont := true
 		for cont {
-			filename := fmt.Sprintf("%s-%d-%s.prof", session, cursor, time.Now())
+			filename := fmt.Sprintf("%s-%d-%d.prof", session, cursor, time.Now().Unix())
 			fmt.Println(filename, "-------- profile started -----------------------------------------------------------")
 			cont = profile(ctx, filename, t)
 			fmt.Println(filename, "-------- profile finished ----------------------------------------------------------")
