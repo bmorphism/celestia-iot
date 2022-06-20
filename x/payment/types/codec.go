@@ -1,12 +1,15 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/celestiaorg/celestia-app/app/encoding"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/golang/protobuf/proto"
 )
 
 var (
@@ -16,6 +19,7 @@ var (
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgWirePayForData{}, URLMsgWirePayForData, nil)
 	cdc.RegisterConcrete(&MsgPayForData{}, URLMsgPayForData, nil)
+	cdc.RegisterConcrete(&Sandwhich{}, "/payment.Sandwhich", nil)
 }
 
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
@@ -30,6 +34,12 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterInterface(
 		"cosmos.auth.v1beta1.BaseAccount",
 		(*authtypes.AccountI)(nil),
+	)
+
+	registry.RegisterInterface(
+		"cosmos.auth.v1beta1.AccountI",
+		(*SandwhichI)(nil),
+		&Sandwhich{},
 	)
 
 	registry.RegisterImplementations(
@@ -57,4 +67,18 @@ func (localEncoder) RegisterInterfaces(r codectypes.InterfaceRegistry) {
 func makePaymentEncodingConfig() encoding.EncodingConfig {
 	e := localEncoder{}
 	return encoding.MakeEncodingConfig(e)
+}
+
+type SandwhichI interface {
+	proto.Message
+	SandwhichType() string
+	HasMeat() bool
+}
+
+func (s *Sandwhich) HasMeat() bool {
+	return true
+}
+
+func (s *Sandwhich) SandwhichType() string {
+	return fmt.Sprintf("%s %s", s.Bread, s.Meat)
 }
